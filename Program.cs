@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace CompareFileds
@@ -46,8 +46,9 @@ namespace CompareFileds
                 new() { FirstName = "Bobby  ", LastName="Bajaj ", RollNo = 102, Standard = "10th", Division = "B", Fee = 14300.450  },
                 new() { FirstName = "Charlie", LastName="Khanal", RollNo = 103, Standard = "10th", Division = "A", Fee = 10300.450 },
                 new() { FirstName = "Sunil", LastName="Thapa", RollNo = 104, Standard = "10th", Division = "A", Fee = 11300.450 },
-                new() { FirstName = "Mahesh", LastName="Basnet", RollNo = 105, Standard = "10th", Division = "B", Fee = 7800.550 },
-                new() { FirstName = "Amit", LastName="Bajaj", RollNo = 106, Standard = "10th", Division = "A", Fee = 7800.550 }
+                new() { FirstName = "Siken", LastName="Dongol", RollNo = 105, Standard = "10th", Division = "A", Fee = 11300.450 },
+                new() { FirstName = "Mahesh", LastName="Basnet", RollNo = 106, Standard = "10th", Division = "B", Fee = 7800.550 },
+                new() { FirstName = "Amit", LastName="Bajaj", RollNo = 107, Standard = "10th", Division = "A", Fee = 7800.550 }
             };
 
             var afterStudents = new List<Student>
@@ -56,8 +57,9 @@ namespace CompareFileds
                 new() { FirstName = "Bobby  ", LastName="Bajaj ", RollNo = 102, Standard = "10th", Division = "B", Fee = 14300.450  },
                 new() { FirstName = "Charlie", LastName="khanal", RollNo = 103, Standard = "10th", Division = "A", Fee = 10300.450 },
                 new() { FirstName = "Sunil", LastName="Thapa", RollNo = 104, Standard = "10th", Division = "C", Fee = 12500.450 },
-                new() { FirstName = "Mahesh", LastName="Bhandari", RollNo = 105, Standard = "11th", Division = "B", Fee = 7845.550 },
-                new() { FirstName = "Amit", LastName="Bajaj", RollNo = 106, Standard = "10th", Division = "A", Fee = 8849.550 }
+                new() { FirstName = "Siken", LastName="Dongol", RollNo = 105, Standard = "10th", Division = "A", Fee = 11300.450 },
+                new() { FirstName = "Mahesh", LastName="Bhandari", RollNo = 106, Standard = "11th", Division = "B", Fee = 7845.550 },
+                new() { FirstName = "Amit", LastName="Bajaj", RollNo = 107, Standard = "10th", Division = "A", Fee = 8849.550 }
             };
 
             var beforeStudentsSorted = beforeStudents.OrderBy(s => s.RollNo).ToList();
@@ -90,7 +92,7 @@ namespace CompareFileds
 
             #region Display in Ascending/Descending
             DisplayAscending(afterStudents);
-            DisplayDescending(afterStudents);
+            //DisplayDescending(afterStudents);
 
             #endregion
         }
