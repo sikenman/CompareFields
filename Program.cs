@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace CompareFileds
 {
@@ -24,17 +25,10 @@ namespace CompareFileds
             Console.WriteLine($"Are the students equal? {areEqual}");
 
             Console.WriteLine("-------------------------------");
-            var CheckObjects = GenerateFieldDifference(student1, student2);
-
-            foreach (var differentField in CheckObjects)
-            {
-                Console.WriteLine(differentField.GetBeforeAfter());
-            }
 
             // Compare students using the CompareTo method.
             //int comparisonResult = student1.CompareTo(student1b);
             //Console.WriteLine(comparisonResult);
-
 
             //if (comparisonResult < 0)
             //    Console.WriteLine($"{student1.Name} comes before {student2.Name}");
@@ -46,24 +40,78 @@ namespace CompareFileds
             // Output:
             // Alice comes before Bob
 
-            var students = new List<Student>
+            var beforeStudents = new List<Student>
             {
                 new() { FirstName = "Alice  ", LastName="Dongol", RollNo = 101, Standard = "10th", Division = "A", Fee = 12500.550 },
                 new() { FirstName = "Bobby  ", LastName="Bajaj ", RollNo = 102, Standard = "10th", Division = "B", Fee = 14300.450  },
-                new() { FirstName = "Charlie", LastName="Khanal", RollNo = 103, Standard = "10th", Division = "A", Fee = 10300.450 }
+                new() { FirstName = "Charlie", LastName="Khanal", RollNo = 103, Standard = "10th", Division = "A", Fee = 10300.450 },
+                new() { FirstName = "Sunil", LastName="Thapa", RollNo = 104, Standard = "10th", Division = "A", Fee = 11300.450 },
+                new() { FirstName = "Mahesh", LastName="Basnet", RollNo = 105, Standard = "10th", Division = "B", Fee = 7800.550 },
+                new() { FirstName = "Amit", LastName="Bajaj", RollNo = 106, Standard = "10th", Division = "A", Fee = 7800.550 }
             };
 
+            var afterStudents = new List<Student>
+            {
+                new() { FirstName = "Alice  ", LastName="Dongol", RollNo = 101, Standard = "10th", Division = "A", Fee = 13000.550 },
+                new() { FirstName = "Bobby  ", LastName="Bajaj ", RollNo = 102, Standard = "10th", Division = "B", Fee = 14300.450  },
+                new() { FirstName = "Charlie", LastName="khanal", RollNo = 103, Standard = "10th", Division = "A", Fee = 10300.450 },
+                new() { FirstName = "Sunil", LastName="Thapa", RollNo = 104, Standard = "10th", Division = "C", Fee = 12500.450 },
+                new() { FirstName = "Mahesh", LastName="Bhandari", RollNo = 105, Standard = "11th", Division = "B", Fee = 7845.550 },
+                new() { FirstName = "Amit", LastName="Bajaj", RollNo = 106, Standard = "10th", Division = "A", Fee = 8849.550 }
+            };
+
+            var beforeStudentsSorted = beforeStudents.OrderBy(s => s.RollNo).ToList();
+            var afterStudentsSorted = afterStudents.OrderBy(s => s.RollNo).ToList();
+
+            List<List<DifferentField>> Alldf = []; // mega list
+            for (int i = 0; i < afterStudentsSorted.Count; i++)
+            {
+                //Console.WriteLine($"Processing Student with RollNo.: {afterStudentsSorted[i].RollNo}");
+                if (afterStudentsSorted[i].RollNo == beforeStudentsSorted[i].RollNo)
+                {
+                    var checkIt = GenerateFieldDifference(beforeStudentsSorted[i], afterStudentsSorted[i]);
+                    if (checkIt != null)
+                    {
+                        Alldf.Add(checkIt);
+                    }
+                }
+            }
+
+            int count = 1;
+            foreach (var it in Alldf)
+            {
+                Console.WriteLine($"Processing for Row {count++}");
+                foreach (var field in it)
+                {
+                    Console.WriteLine(field.GetBeforeAfter());
+                }
+                Console.WriteLine();
+            }
+
+            #region Display in Ascending/Descending
+            DisplayAscending(afterStudents);
+            DisplayDescending(afterStudents);
+
+            #endregion
+        }
+
+        public static void DisplayAscending(List<Student> students)
+        {
             // Sort students by Fee in ascending order
             var sortedStudentsAsc = students.OrderBy(s => s.Fee).ToList();
-
-            // Sort students by Fee in descending order
-            var sortedStudentsDesc = students.OrderByDescending(s => s.Fee).ToList();
             Console.WriteLine();
             Console.WriteLine("Sorted students (ascending):");
             foreach (var student in sortedStudentsAsc)
             {
                 Console.WriteLine($"Name: {student.FirstName}, Fee: {student.Fee}");
             }
+        }
+
+        public static void DisplayDescending(List<Student> students)
+        {
+            // Sort students by Fee in descending order
+            var sortedStudentsDesc = students.OrderByDescending(s => s.Fee).ToList();
+
 
             Console.WriteLine("\nSorted students (descending):");
             foreach (var student in sortedStudentsDesc)
@@ -73,10 +121,9 @@ namespace CompareFileds
         }
 
 
-
-        public static IList<DifferentField> GenerateFieldDifference<T>(T originalObject, T changedObject)
+        public static List<DifferentField> GenerateFieldDifference<T>(T originalObject, T changedObject)
         {
-            IList<DifferentField> list = new List<DifferentField>();
+            List<DifferentField> list = new List<DifferentField>();
             //string className = $"[{originalObject.GetType().Name}]";
 
             foreach (PropertyInfo property in originalObject.GetType().GetProperties())
@@ -152,7 +199,7 @@ namespace CompareFileds
                 return 1;
 
             // Compare students based on RollNo.
-            return Fee.CompareTo(other.Fee);
+            return RollNo.CompareTo(other.RollNo);
         }
 
         // Override GetHashCode if you override Equals.
@@ -170,9 +217,39 @@ namespace CompareFileds
         public string? BeforeValue { get; set; } = null;
         public string? AfterValue { get; set; } = null;
 
+        public double? DblBeforeValue
+        {
+            get
+            {
+                // Convert the BeforeValue to a double
+                if (double.TryParse(BeforeValue, out double tmp))
+                    return tmp;
+                else
+                    return 0.0; // Return 0.0 if the conversion fails
+            }
+        }
+        public double? DblAfterValue
+        {
+            get
+            {
+                // Convert the AfterValue to a double
+                if (double.TryParse(AfterValue, out double tmp))
+                    return tmp;
+                else
+                    return 0.0; // Return 0.0 if the conversion fails
+            }
+        }
+
         public string GetBeforeAfter()
         {
-            return $"[{FieldName}: {DataType}] -> '{BeforeValue}' to '{AfterValue}'";
+            if (DataType == "Double")
+            {
+                return $"[{FieldName}: {DataType}] -> {DblBeforeValue} to {DblAfterValue}";
+            }
+            else
+            {
+                return $"[{FieldName}: {DataType}] -> '{BeforeValue}' to '{AfterValue}'";
+            }
         }
     }
 }
